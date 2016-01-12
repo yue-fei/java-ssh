@@ -1,0 +1,31 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	// struts library
+	compile group: 'org.apache.struts', name: 'struts2-core', version: '2.3.24.1'
+	compile 'org.apache.struts:struts2-spring-plugin:2.3.24.1'
+	compile 'org.apache.struts:struts2-json-plugin:2.3.24.1'
+	
+	// spring library
+	compile group: 'org.springframework', name: 'spring-core', version: '4.2.3.RELEASE'
+	compile group: 'org.springframework', name: 'spring-web', version: '4.2.3.RELEASE'
+	compile group: 'org.springframework', name: 'spring-orm', version: '4.2.3.RELEASE'
+	compile group: 'org.springframework', name: 'spring-aop', version: '4.2.3.RELEASE'
+	compile group: 'org.springframework', name: 'spring-aspects', version: '4.2.3.RELEASE'
+	compile group: 'org.springframework', name: 'spring-jdbc', version: '4.2.3.RELEASE'
+	
+	// hibernate library
+	compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.1.Final'
+	
+	// common library
+	compile 'org.slf4j:slf4j-api:1.7.13'
+	compile 'mysql:mysql-connector-java:5.1.38'
+	compile 'org.apache.commons:commons-pool2:2.4.2'
+	compile 'org.apache.commons:commons-dbcp2:2.1.1'
+	
+	testCompile 'junit:junit:4.12'
+}

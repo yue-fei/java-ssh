@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<bean id="userAction" class="com.example.action.UserAction">
+		<property name="userService" ref="userService" />
+		<property name="aopService" ref="aopService" />
+	</bean>
+	<bean id="userService" class="com.example.service.UserService">
+		<property name="userDao" ref="userDao" />
+	</bean>
+	<bean id="userDao" class="com.example.dao.UserDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- aop -->
+	<aop:config>
+		<aop:aspect id="testAspect" ref="testAop">
+			<aop:pointcut id="testPointcut"
+				expression="this(com.example.service.AopService)" />
+			<aop:before pointcut-ref="testPointcut" method="doBefore"/>
+			<aop:around pointcut-ref="testPointcut" method="doAround" />
+			<aop:after pointcut-ref="testPointcut" method="doAfter" />
+			<aop:after-throwing pointcut-ref="testPointcut" method="doThrowing" throwing="ex" />
+		</aop:aspect>
+	</aop:config>
+	<bean id="aopService" class="com.example.service.AopService">
+		<property name="aService" ref="aService" />
+		<property name="bService" ref="bService" />
+	</bean>
+	<bean id="testAop" class="com.example.aop.TestAop" />
+	<bean id="aService" class="com.example.service.AService" />
+	<bean id="bService" class="com.example.service.BService" />
+	
+	<!-- configure jdbc.properties -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="/WEB-INF/jdbc.properties" />
+	</bean>
+	
+	<!-- data source configuration -->
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.databaseurl}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	
+	<!-- configure hibernate session factory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation">
+			<value>classpath:hibernate.cfg.xml</value>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${jdbc.dialect}</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- run sql queries in transactions -->
+	<tx:annotation-driven />
+    <bean id="transactionManager"
+        class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+</beans>
