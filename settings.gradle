@@ -16,4 +16,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'mySSH'
+rootProject.name = 'java-ssh'
